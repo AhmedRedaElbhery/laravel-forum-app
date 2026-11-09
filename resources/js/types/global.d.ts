@@ -1,4 +1,5 @@
 import type { Directive } from 'vue';
+import type { route as routeFn } from 'ziggy-js';
 import type { Auth } from '@/types/auth';
 
 // Extend ImportMeta interface for Vite...
@@ -34,5 +35,6 @@ declare module 'vue' {
         $inertia: typeof Router;
         $page: Page;
         $headManager: ReturnType<typeof createHeadManager>;
+        route: typeof routeFn;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentResource;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,8 +15,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
-        return Inertia::render('posts/Index', compact('posts'));
+        return Inertia::render('posts/Index', [
+            'posts' => PostResource::collection(
+                Post::with('user')->latest()->latest('id')->paginate()
+            ),
+        ]);
     }
 
     /**
@@ -36,9 +41,17 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        //
+        $post->load([
+            'user',
+            'comments.user',
+        ]);
+
+        return Inertia::render('posts/Show', [
+            'post' => PostResource::make($post),
+            'comments' => CommentResource::collection($post->comments),
+        ]);
     }
 
     /**

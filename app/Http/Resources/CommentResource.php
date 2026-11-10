@@ -20,6 +20,10 @@ class CommentResource extends JsonResource
             'body' => $this->body,
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
+            'can' => [
+                'delete' => $request->user()?->can('delete', $this->resource),
+                'update' => $request->user()?->can('update', $this->resource),
+            ],
         ];
     }
 }

@@ -67,7 +67,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarFooter>
             <NavFooter :items="footerNavItems" />
-            <NavUser />
+            <NavUser v-if="$page.props.auth.user" />
         </SidebarFooter>
     </Sidebar>
     <slot />

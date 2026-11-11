@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\storePostRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -27,15 +30,19 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        Gate::authorize('create', Post::class);
+        return Inertia::render('posts/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(storePostRequest $request)
     {
-        //
+        $post = $request->user()->posts()->create(
+            $request->all()
+        );
+        return redirect()->route('posts.show', $post);
     }
 
     /**
@@ -57,24 +64,39 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Post $post)
     {
-        //
+        Gate::authorize('update', $post);
+        return Inertia::render(
+            'posts/edit',
+            [
+                'post' => PostResource::make($post),
+            ]
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(storePostRequest $request, Post $post)
     {
-        //
+        Gate::authorize('update', $post);
+
+        $post->update([
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
+
+        return redirect()->back()->with('success', 'updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        Gate::authorize('delete', $post);
+        $post->delete();
+        return redirect()->route('posts.index');
     }
 }

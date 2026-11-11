@@ -7,7 +7,7 @@
 
     </div>
     <div class="flex">
-        <form v-if="comment.can.update" @submit.prevent="updateSubmit" class="mt-3 mx-2">
+        <form v-if="comment.can.update" @submit.prevent="$emit('edit', comment)" class="mt-3 mx-2">
             <button type="submit" class="rounded bg-gray-900 px-4 py-1 text-gray-400">
                 Edit
             </button>
@@ -35,6 +35,8 @@ const props = defineProps(['comment']);
 const formattedDate = formatTimeAgo(
     new Date(props.comment.created_at)
 );
+
+const emit = defineEmits(['edit']);
 
 function submit() {
     if (confirm('Are you sure you want to delete this comment?')) {

@@ -11,6 +11,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('posts.comments', CommentController::class)
         ->shallow()
         ->only(['store', 'update', 'destroy']);
+
+    Route::resource('posts', PostController::class)->only(['store', 'create', 'edit', 'update', 'destroy']);
 });
 
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
